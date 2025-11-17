@@ -23,5 +23,8 @@ module Converty
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.solid_cable.enabled = false
+    config.solid_queue.enabled = false
+    config.solid_cache.enabled = false
   end
 end
