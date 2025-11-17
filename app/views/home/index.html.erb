@@ -1,0 +1,141 @@
+<!-- Intro Section -->
+<div id="intro">
+  <%= image_tag "logo.svg", alt: "Converty Logo", class: "logo" %>
+</div>
+
+<!-- Main Content -->
+<div id="main" class="hidden">
+
+  <!-- Header -->
+<div class="header">
+  <div class="nav-links">
+    <a href="#">FAQ's</a>
+    <a href="#" id="open-premium-plans">Premium Plans</a>
+    <a href="#">How it Works</a>
+  </div>
+
+  <!-- Center Title -->
+  <div class="center-title">File Converter</div>
+
+  <div class="user-area">
+    <div class="user-name"><%= @user.nickname.presence || "Guest" %></div>
+    <div class="avatar"><%= (@user.nickname || "G")[0,2].upcase %></div>
+  </div>
+</div>
+
+<h2 class="offers-title">Exclusive Offers For You</h2>
+
+<div class="three-3d-ads">
+  <!-- Left Card -->
+  <div class="ad-card left">
+    <div class="card-badge">HOT</div>
+    <img src="https://picsum.photos/id/1011/500/300" alt="">
+  </div>
+
+  <!-- Center Card -->
+  <div class="ad-card center">
+    <div class="card-badge">BEST</div>
+    <img src="https://picsum.photos/id/1003/500/300" alt="">
+  </div>
+
+  <!-- Right Card -->
+  <div class="ad-card right">
+    <div class="card-badge">NEW</div>
+    <img src="https://picsum.photos/id/1025/500/300" alt="">
+  </div>
+</div>
+
+
+  <!-- Cards Grid -->
+  <div class="cards">
+    <% @conversions.each do |conversion| %>
+      <div class="card">
+        <h3><%= conversion[:name] %></h3>
+        <button class="button open-upload-modal" data-conversion-type="<%= conversion[:type] %>">
+          Go
+        </button>
+      </div>
+    <% end %>
+</div>
+<!-- FUTURISTIC SECTIONS WRAPPER -->
+<section id="sections-wrapper">
+
+  <!-- HOLOGRAM TITLE -->
+  <div class="holo-title">
+    <span>About Converter</span>
+    <div class="scanline"></div>
+  </div>
+
+
+  <!-- FAQ SECTION -->
+  <section id="faq-section" class="futuristic-block">
+    <h2 class="block-header">F.A.Q – Hologram Feed</h2>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <div class="faq-q">What is Converty?</div>
+        <div class="faq-a">An autonomous AI engine that restructures any file into any format with zero loss.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Is file security guaranteed?</div>
+        <div class="faq-a">Your files exist only temporarily in encrypted volatile memory and self-destruct afterward.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What formats are supported?</div>
+        <div class="faq-a">Images, documents, media, archives — 50+ formats processed by the Quantum Converter.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Why are free conversions limited?</div>
+        <div class="faq-a">Premium unlocks hyper-speed GPU cores reserved for paid members.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How to upgrade?</div>
+        <div class="faq-a">Open the Quantum Upgrade Panel from the top navigation.</div>
+      </div>
+
+    </div>
+  </section>
+
+
+
+  <!-- HOW IT WORKS -->
+  <section id="how-section" class="futuristic-block">
+    <h2 class="block-header">Process Simulation – How It Works</h2>
+
+    <div class="how-grid">
+
+      <div class="how-step">
+        <div class="step-num">01</div>
+        <p>Select a transformation module.</p>
+      </div>
+
+      <div class="how-step">
+        <div class="step-num">02</div>
+        <p>Upload the target file to the Core Engine.</p>
+      </div>
+
+      <div class="how-step">
+        <div class="step-num">03</div>
+        <p>AI reconstructs the file in real-time.</p>
+      </div>
+
+      <div class="how-step">
+        <div class="step-num">04</div>
+        <p>Auto-deliver optimized output instantly.</p>
+      </div>
+
+    </div>
+  </section>
+
+</section>
+
+</div>
+
+<!-- Upload Partial -->
+<%= render 'upload' %>
+<%= render 'shared/account_modal' %>

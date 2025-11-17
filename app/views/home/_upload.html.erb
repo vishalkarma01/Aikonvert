@@ -1,0 +1,94 @@
+<div id="upload-section" class="upload-overlay" style="display: none;">
+  <div class="upload-container">
+    <h2>Upload & Convert</h2>
+    <p>Drop or select a file and choose the target format. Our AI-powered engine will handle the rest.</p>
+
+    <%= form_with url: conversions_path, html: { multipart: true, id: "upload-form", target: "_blank" }, local: true do |f| %>
+
+      <%= hidden_field_tag :converter_type, "", id: "converter_type_field" %>
+
+      <!-- File input -->
+      <div class="form-group">
+        <%= f.file_field :file, required: true, class: "file-input" %>
+      </div>
+
+      <!-- Target format dropdown -->
+      <div class="form-group">
+        <select name="target_format" required id="target_format_select">
+          <!-- Options will be dynamically populated by JS -->
+        </select>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="button-group">
+        <button type="submit" class="upload-btn">Upload & Convert</button>
+        <button type="button" class="cancel-btn">Cancel</button>
+      </div>
+    <% end %>
+
+   <!-- Loader Section (hidden initially) -->
+    <div id="loading-section" style="margin-top: 20px; display: none;">
+      <div class="loader"></div>
+      <p>Converting your file, please wait...</p>
+    </div>
+
+    <!-- Download Section (hidden initially) -->
+    <div id="download-section" style="margin-top: 20px; display: none;">
+      <a id="download-link" class="upload-btn" download>Download File</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("upload-section");
+  const openBtns = document.querySelectorAll(".open-upload-modal");
+  const converterTypeField = document.getElementById("converter_type_field");
+  const targetSelect = document.getElementById("target_format_select");
+
+  // Map conversion type to available target formats
+  const converterFormats = {
+    image_converter: ["jpeg", "png", "gif", "bmp", "tiff", "webp", "heic"],
+    pdf_converter: ["pdf", "doc", "docx"],
+    doc_converter: ["doc", "docx", "pdf"]
+  };
+
+  openBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const type = btn.dataset.conversionType;
+      converterTypeField.value = type;
+
+      // Clear previous options
+      targetSelect.innerHTML = "";
+
+      // Populate target options dynamically
+      (converterFormats[type] || []).forEach(format => {
+        const opt = document.createElement("option");
+        opt.value = format;
+        opt.textContent = format.toUpperCase();
+        targetSelect.appendChild(opt);
+      });
+
+      // Show modal
+      modal.style.display = "flex";
+    });
+  });
+
+  // Cancel modal
+  const cancelBtns = modal.querySelectorAll(".cancel-btn");
+  cancelBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      modal.style.display = "none";
+      targetSelect.innerHTML = "";
+    });
+  });
+
+  // Click outside modal closes it
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+      targetSelect.innerHTML = "";
+    }
+  });
+});
+</script>

@@ -1,0 +1,168 @@
+<div id="upgrade-popup"
+     style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.82); backdrop-filter: blur(6px);
+            display: none; justify-content: center; align-items: center; 
+            z-index: 9999;">
+
+  <div style="background: #0d1117; width: 450px; padding: 28px;
+              border-radius: 20px; box-shadow: 0 0 40px rgba(0,255,255,0.15);
+              border: 1px solid rgba(0,255,255,0.15);">
+
+    <!-- Heading -->
+    <h2 style="
+      text-align:center;
+      font-size: 30px;
+      margin-bottom: 18px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #00eaff, #a855f7);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 20px rgba(0,238,255,0.45), 0 0 35px rgba(168,85,247,0.3);
+      letter-spacing: 1px;
+    ">
+      Upgrade Your Plan
+    </h2>
+
+    <p style="text-align:center; font-size: 15px; margin-bottom: 28px;
+              color:#aab8c5;">
+      Choose a futuristic plan and unlock unlimited conversions.
+    </p>
+
+    <!-- Plans Wrapper -->
+    <div style="display:flex; flex-direction:column; gap:22px;">
+
+      <!-- Basic Plan -->
+      <div 
+        style="
+          padding:20px; border-radius:16px;
+          background: linear-gradient(145deg, #10141b, #0b0f14);
+          border: 1px solid rgba(0,255,255,0.1);
+          box-shadow: 0 0 20px rgba(0,255,255,0.05);
+          display:flex; justify-content:space-between; align-items:center;
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+        "
+        onmouseover="
+          this.style.transform='translateY(-6px) scale(1.03)';
+          this.style.boxShadow='0 0 22px rgba(0,255,255,0.25)';
+          this.style.border='1px solid rgba(0,255,255,0.4)';
+        "
+        onmouseout="
+          this.style.transform='translateY(0) scale(1)';
+          this.style.boxShadow='0 0 20px rgba(0,255,255,0.05)';
+          this.style.border='1px solid rgba(0,255,255,0.1)';
+        "
+      >
+        <div>
+          <h3 style="margin:0; font-size:18px; font-weight:600; color:#e2e8f0;">
+            Basic
+          </h3>
+          <p style="margin:5px 0 0; font-size:14px; color:#94a3b8;">
+            20 conversions / month
+          </p>
+        </div>
+        <button style="
+          background:#00eaff; color:#000; border:none;
+          padding:10px 18px; border-radius:10px; cursor:pointer;
+          font-weight:600; transition:0.3s;
+          box-shadow:0 0 10px #00eaff;
+        ">
+          ₹99 / mo
+        </button>
+      </div>
+
+      <!-- Standard Plan -->
+      <div
+        style="
+          padding:20px; border-radius:16px;
+          background: linear-gradient(145deg, #12171f, #0c1117);
+          border: 1px solid rgba(0,255,180,0.12);
+          box-shadow: 0 0 20px rgba(0,255,180,0.08);
+          display:flex; justify-content:space-between; align-items:center;
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+        "
+        onmouseover="
+          this.style.transform='translateY(-6px) scale(1.03)';
+          this.style.boxShadow='0 0 22px rgba(0,255,180,0.25)';
+          this.style.border='1px solid rgba(0,255,180,0.5)';
+        "
+        onmouseout="
+          this.style.transform='translateY(0) scale(1)';
+          this.style.boxShadow='0 0 20px rgba(0,255,180,0.08)';
+          this.style.border='1px solid rgba(0,255,180,0.12)';
+        "
+      >
+        <div>
+          <h3 style="margin:0; font-size:18px; font-weight:600; color:#e2e8f0;">
+            Standard
+          </h3>
+          <p style="margin:5px 0 0; font-size:14px; color:#94a3b8;">
+            100 conversions / month
+          </p>
+        </div>
+        <button style="
+          background:#00ffb4; color:#000; border:none;
+          padding:10px 18px; border-radius:10px; cursor:pointer;
+          font-weight:600; transition:0.3s;
+          box-shadow:0 0 10px #00ffb4;
+        ">
+          ₹199 / mo
+        </button>
+      </div>
+
+      <!-- PREMIUM PLAN -->
+      <div
+        style="
+          padding:22px; border-radius:18px;
+          background: linear-gradient(160deg, #0e0b28, #0a0024);
+          border: 2px solid rgba(170,0,255,0.4);
+          box-shadow: 0 0 25px rgba(170,0,255,0.3),
+                      0 0 40px rgba(170,0,255,0.15);
+          display:flex; justify-content:space-between; align-items:center;
+          transition: transform 0.28s ease, box-shadow 0.28s ease, border 0.28s ease;
+        "
+        onmouseover="
+          this.style.transform='translateY(-8px) scale(1.04)';
+          this.style.boxShadow='0 0 35px rgba(170,0,255,0.55), 0 0 65px rgba(170,0,255,0.35)';
+          this.style.border='2px solid rgba(200,0,255,0.7)';
+        "
+        onmouseout="
+          this.style.transform='translateY(0) scale(1)';
+          this.style.boxShadow='0 0 25px rgba(170,0,255,0.3), 0 0 40px rgba(170,0,255,0.15)';
+          this.style.border='2px solid rgba(170,0,255,0.4)';
+        "
+      >
+        <div>
+          <h3 style="margin:0; font-size:20px; font-weight:800; color:#d8b4fe;
+                     text-shadow:0 0 10px #a855f7;">
+            PREMIUM
+          </h3>
+          <p style="margin:7px 0 0; font-size:15px; color:#c084fc;">
+            Unlimited conversions + AI Boost
+          </p>
+        </div>
+        <button style="
+          background:#a855f7; color:#fff; border:none;
+          padding:12px 20px; border-radius:12px; cursor:pointer;
+          font-weight:700; transition:0.3s;
+          box-shadow:0 0 12px #d946ef;
+        ">
+          ₹299 / mo
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Close button -->
+    <button id="close-upgrade-popup"
+            style="margin-top:26px; width:100%; background:#1f2937;
+                   padding:12px 0; border:1px solid #374151;
+                   border-radius:12px; cursor:pointer; font-size:16px;
+                   color:#cbd5e1; transition:0.3s;"
+            onmouseover="this.style.background='#374151'"
+            onmouseout="this.style.background='#1f2937'">
+      Maybe Later
+    </button>
+
+  </div>
+
+</div>
