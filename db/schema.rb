@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_15_113827) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_17_134544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,14 +25,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_113827) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "session_id"
     t.string "nickname"
     t.string "email"
     t.integer "remaining_coupons"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "session_token"
+    t.string "visitor_token"
+    t.boolean "guest"
     t.index ["session_token"], name: "index_users_on_session_token"
+    t.index ["visitor_token"], name: "index_users_on_visitor_token", unique: true
   end
 
   add_foreign_key "conversions", "users"

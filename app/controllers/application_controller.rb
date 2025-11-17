@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   include VisitorTracking
   allow_browser versions: :modern
 
@@ -8,14 +7,15 @@ class ApplicationController < ActionController::Base
   private
 
   def set_user_global
-    session[:visitor_id] ||= SecureRandom.uuid
+    # Use permanent signed cookie for persistent sessions
+    cookies.permanent.signed[:visitor_token] ||= SecureRandom.uuid
 
-    @user = User.find_or_initialize_by(session_token: session[:visitor_id])
+    # Find or initialize user by session_token
+    @user = User.find_or_initialize_by(session_token: cookies.signed[:visitor_token])
 
-    # If user record is new, initialize default values
     if @user.new_record?
-      @user.session_id = session.id
       @user.remaining_coupons ||= 1
+      @user.guest = true if @user.guest.nil?
       @user.save!
     end
   end

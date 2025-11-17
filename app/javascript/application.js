@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     intro.style.transition = "opacity 0.5s";
     intro.style.opacity = 0;
-
     setTimeout(() => {
       intro.style.display = "none";
       main.classList.remove("hidden");
@@ -22,15 +21,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 3000);
 
   // -----------------------------
-  // 2️⃣ User Session Initialization
+  // 2️⃣ Fetch user from backend
   // -----------------------------
-  fetch("/users/ensure_session_user")
-    .then(res => res.json())
-    .then(data => {
-      console.log("✅ User session initialized:", data);
-      window.currentUser = data;
-    })
-    .catch(err => console.error("Failed to initialize session:", err));
+  async function fetchUser() {
+    try {
+      const res = await fetch("/users/ensure_session_user");
+      const data = await res.json();
+
+      window.currentUser = {
+        session_token: data.session_token,
+        remaining_coupons: data.remaining_coupons,
+        has_account: data.has_account,
+        guest: !data.has_account
+      };
+      localStorage.setItem("currentUser", JSON.stringify(window.currentUser));
+      return window.currentUser;
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+      return window.currentUser || { remaining_coupons: 0, has_account: false, guest: true };
+    }
+  }
+
+  // Initialize user session
+  const storedUser = localStorage.getItem("currentUser");
+  if (storedUser) {
+    window.currentUser = JSON.parse(storedUser);
+  }
+  fetchUser(); // Always refresh on page load
 
   // -----------------------------
   // 3️⃣ Conversion Modal Logic
@@ -41,11 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const converterTypeField = document.getElementById("converter_type_field");
   const targetSelect = document.getElementById("target_format_select");
   const uploadForm = document.getElementById("upload-form");
-
-  // Loader & download section
   let loadingSection = document.getElementById("loading-section");
   const downloadSection = document.getElementById("download-section");
-  const downloadLink = document.getElementById("download-link");
 
   if (!loadingSection) {
     loadingSection = document.createElement("div");
@@ -57,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.querySelector(".upload-container").appendChild(loadingSection);
   }
 
-  // Supported formats
   const converterFormats = {
     jpeg_to_png: ["png"],
     png_to_jpeg: ["jpeg"],
@@ -70,12 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 4️⃣ Open Modal + Populate Formats
   // -----------------------------
   openBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
+      await fetchUser(); // Refresh before checking
 
-      // If coupons are zero → close modal & show upgrade popup
-      if (window.currentUser && window.currentUser.remaining_coupons <= 0) {
-        modal.style.display = "none"; // close convert modal
-        document.getElementById("upgrade-popup").style.display = "flex"; // show upgrade popup
+      if (window.currentUser.remaining_coupons <= 0) {
+        modal.style.display = "none";
+        document.getElementById("upgrade-popup").style.display = "flex";
         return;
       }
 
@@ -107,11 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
     loadingSection.style.display = "none";
     targetSelect.innerHTML = "";
   }
-
   cancelBtns.forEach(btn => btn.addEventListener("click", closeModal));
-  modal.addEventListener("click", e => {
-    if (e.target === modal) closeModal();
-  });
+  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
 
   // -----------------------------
   // 6️⃣ File Conversion Logic
@@ -119,9 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (uploadForm) {
     uploadForm.addEventListener("submit", async e => {
       e.preventDefault();
+      await fetchUser();
 
-      // Coupons zero → close modal and show upgrade popup
-      if (window.currentUser && window.currentUser.remaining_coupons <= 0) {
+      if (window.currentUser.remaining_coupons <= 0) {
         modal.style.display = "none";
         document.getElementById("upgrade-popup").style.display = "flex";
         return;
@@ -143,15 +153,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
 
-        // Filename extraction
         let filename = "converted_file";
         const disposition = response.headers.get("Content-Disposition");
-
         if (disposition) {
           const match = disposition.match(/filename="([^"]+)"/);
-          if (match && match[1]) {
-            filename = match[1];
-          }
+          if (match && match[1]) filename = match[1];
         } else if (formData.get("file")) {
           const originalName = formData.get("file").name;
           const baseName = originalName.split(".")[0];
@@ -159,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
           filename = `${baseName}_converted.${ext}`;
         }
 
-        // Download file
         const a = document.createElement("a");
         a.href = url;
         a.download = filename;
@@ -170,9 +175,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         loadingSection.style.display = "none";
 
-        // Reduce coupon
-        if (window.currentUser) window.currentUser.remaining_coupons -= 1;
-
+        // Update local count
+        window.currentUser.remaining_coupons -= 1;
+        localStorage.setItem("currentUser", JSON.stringify(window.currentUser));
       } catch (err) {
         loadingSection.style.display = "none";
         alert("Error converting file. Please try again.");
@@ -188,64 +193,72 @@ document.addEventListener("DOMContentLoaded", () => {
   const closePopupBtn = document.getElementById("close-upgrade-popup");
   const upgradeBtn = document.getElementById("upgrade-btn");
 
-  // Close upgrade popup
-  if (closePopupBtn) {
-    closePopupBtn.addEventListener("click", () => {
-      upgradePopup.style.display = "none";
-    });
-  }
+  if (closePopupBtn) closePopupBtn.addEventListener("click", () => { upgradePopup.style.display = "none"; });
+  if (upgradeBtn) upgradeBtn.addEventListener("click", () => { window.location.href = "/pricing"; });
 
-  // Upgrade button
-  if (upgradeBtn) {
-    upgradeBtn.addEventListener("click", () => {
-      window.location.href = "/pricing"; 
-    });
-  }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
+  // -----------------------------
+  // 8️⃣ Premium Plans Button
+  // -----------------------------
   const premiumBtn = document.getElementById("open-premium-plans");
-  const upgradePopup = document.getElementById("upgrade-popup");
   const convertPopup = document.getElementById("upload-section");
-
-  premiumBtn.addEventListener("click", function (e) {
+  premiumBtn.addEventListener("click", e => {
     e.preventDefault();
-
-    // Close convert popup if visible
     if (convertPopup) convertPopup.style.display = "none";
-
-    // Open the upgrade popup
     if (upgradePopup) {
       upgradePopup.style.display = "flex";
-      upgradePopup.style.zIndex = "999999";      // bring on top
+      upgradePopup.style.zIndex = "999999";
       upgradePopup.style.opacity = "1";
       upgradePopup.style.visibility = "visible";
     }
   });
-});
 
-document.addEventListener("DOMContentLoaded", () => {
+  // -----------------------------
+  // 9️⃣ Profile Access (Guest Handling)
+  // -----------------------------
+  const profileBtn = document.getElementById("open-profile"); // profile button
+  const profileModal = document.getElementById("profile-modal"); // profile modal
+  const createAccountModal = document.getElementById("account-modal"); // create account modal
 
-  // Scroll
+  if (profileBtn) {
+    profileBtn.addEventListener("click", async e => {
+      e.preventDefault();
+      await fetchUser();
+
+      if (!window.currentUser.has_account) {
+        if (createAccountModal) {
+          createAccountModal.style.display = "flex";
+          createAccountModal.style.zIndex = "999999";
+        }
+        return;
+      }
+
+      if (profileModal) {
+        profileModal.style.display = "flex";
+        profileModal.style.zIndex = "999999";
+      }
+    });
+  }
+
+  // -----------------------------
+  // 10️⃣ Navigation Scroll
+  // -----------------------------
   const navLinks = document.querySelectorAll(".nav-links a");
-
   navLinks[0].addEventListener("click", e => {
     e.preventDefault();
     document.getElementById("faq-section").scrollIntoView({ behavior: "smooth" });
   });
-
   navLinks[2].addEventListener("click", e => {
     e.preventDefault();
     document.getElementById("how-section").scrollIntoView({ behavior: "smooth" });
   });
 
-  // FAQ Expand
+  // -----------------------------
+  // 11️⃣ FAQ Expand
+  // -----------------------------
   document.querySelectorAll(".faq-item").forEach(item => {
     item.addEventListener("click", () => {
       const ans = item.querySelector(".faq-a");
-
-      if (ans.style.maxHeight) ans.style.maxHeight = null;
-      else ans.style.maxHeight = ans.scrollHeight + "px";
+      ans.style.maxHeight = ans.style.maxHeight ? null : ans.scrollHeight + "px";
     });
   });
 

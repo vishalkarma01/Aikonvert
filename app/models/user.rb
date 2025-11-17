@@ -1,7 +1,6 @@
 class User < ApplicationRecord
   has_many :conversions, dependent: :destroy
 
-  validates :session_id, presence: true, uniqueness: true
   validates :nickname, presence: true, on: :update
   validates :email, presence: true, uniqueness: true, on: :update
 
